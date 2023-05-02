@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  before_action :remove_completed_param, only: [:create, :update]
   def index
     @tasks = Task.all
   end
@@ -36,12 +37,16 @@ class TasksController < ApplicationController
   def destroy
     @task = Task.find(params[:id])
     @task.destroy
-    redirect_to task_path, status: :see_other
+    redirect_to root_path, notice: "Task successfully deleted!"
   end
 
   private
 
   def task_params
     params.require(:task).permit(:title, :details, :completed)
+  end
+
+  def remove_completed_param
+    params[:task].delete(:completed)
   end
 end
